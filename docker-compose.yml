@@ -1,0 +1,55 @@
+version: "3"
+services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.2.15
+    ports:
+      - 2379
+      - 2380
+    command:
+      - /usr/local/bin/etcd
+      - -name
+      - etcd
+      - -advertise-client-urls 
+      - http://etcd:2379
+      - -listen-client-urls 
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls 
+      - http://0.0.0.0:2380
+      - -listen-peer-urls 
+      - http://0.0.0.0:2380
+  apiserver:
+    build: ./apiserver
+    ports:
+      - 6443
+      - 8888:8080
+    command:
+      - /opt/kube-apiserver
+      - --admission-control=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
+      - --allow-privileged=true
+      - --apiserver-count=1
+      - --authorization-mode=Node,RBAC
+      - --bind-address=0.0.0.0
+      - --enable-swagger-ui=true
+      - --etcd-servers=http://etcd:2379
+      - --insecure-bind-address=0.0.0.0
+      - --insecure-port=8080
+      - --kubelet-https=false
+      - --runtime-config=api/all
+      - --service-node-port-range=30000-32767
+      - --v=2
+      - --anonymous-auth=true
+  controller-manager:
+    build: ./controller-manager
+    command:
+      - /opt/kube-controller-manager
+      - --cluster-name=kubernetes
+      - --leader-elect=true
+      - --master=http://apiserver:8080
+      - --v=2
+  scheduler:
+    build: ./scheduler
+    command:
+      - /opt/kube-scheduler
+      - --leader-elect=true
+      - --master=http://apiserver:8080
+      - --v=2
