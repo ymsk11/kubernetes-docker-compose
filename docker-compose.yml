@@ -27,7 +27,7 @@ services:
       - --admission-control=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
       - --allow-privileged=true
       - --apiserver-count=1
-      - --authorization-mode=Node,RBAC
+      - --authorization-mode=AlwaysAllow
       - --bind-address=0.0.0.0
       - --enable-swagger-ui=true
       - --etcd-servers=http://etcd:2379
