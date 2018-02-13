@@ -53,3 +53,18 @@ services:
       - --leader-elect=true
       - --master=http://apiserver:8080
       - --v=2
+  kubelet:
+    build: ./kubelet
+    command:
+      - /opt/kubelet
+      - --allow-privileged=true
+      - --anonymous-auth=true
+      - --authorization-mode=AlwaysAllow
+      - --register-node=true
+      - --kubeconfig=/opt/kubeconfig
+      - --fail-swap-on=false
+      - --v=2
+    privileged: true
+    volumes:
+      - /var/:/var/
+      - /var/run/docker.sock:/var/run/docker.sock
