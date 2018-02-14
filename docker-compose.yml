@@ -24,7 +24,7 @@ services:
       - 8888:8080
     command:
       - /opt/kube-apiserver
-      - --admission-control=Initializers,NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota
+      - --admission-control=AlwaysAdmit
       - --allow-privileged=true
       - --apiserver-count=1
       - --authorization-mode=AlwaysAllow
