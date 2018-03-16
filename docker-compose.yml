@@ -68,3 +68,12 @@ services:
     volumes:
       - /var/:/var/
       - /var/run/docker.sock:/var/run/docker.sock
+  proxy:
+    build: ./proxy
+    privileged: true
+    volumes:
+      - /run/xtables.lock:/run/xtables.lock
+    command:
+      - /opt/kube-proxy
+      - --kubeconfig=/opt/kubeconfig
+      - --v=2
